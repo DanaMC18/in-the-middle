@@ -1,11 +1,13 @@
 import React        from 'react';
 import { connect }  from 'react-redux';
+import Map from './Map';
 
 class InTheMiddleContainer extends React.Component {
   render() {
     return (
       <div>
         <h1>Hello World</h1>
+        <Map />
       </div>
     )
   }
