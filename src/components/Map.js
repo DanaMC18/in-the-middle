@@ -10,6 +10,7 @@ export default function Map({ options, onMount, className }) {
     const map = new window.google.maps.Map(props.ref.current, options)
     onMount && onMount(map)
   }
+
   useEffect(() => {
     if (!window.google) {
       const script = document.createElement('script')
