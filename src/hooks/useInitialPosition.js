@@ -4,7 +4,7 @@ import {
 } from 'react';
 import { DEFAULT_COORDS, DEFAULT_ZOOM } from '../constants';
 
-export const usePosition = () => {
+export const useInitialPosition = () => {
   const [position, setPosition] = useState(DEFAULT_COORDS);
   const [zoom, setZoom]         = useState(DEFAULT_ZOOM);
 
