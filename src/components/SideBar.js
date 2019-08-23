@@ -4,8 +4,12 @@ import React, {
 } from 'react';
 import { times } from 'lodash';
 
-function googleAutoComplete(input) {
-  return new window.google.maps.places.Autocomplete(input)
+function googleAutoComplete(inputs) {
+  inputs.forEach(input => {
+    if (!input.hasAttribute('autocomplete')) {
+      new window.google.maps.places.Autocomplete(input)
+    }
+  })
 }
 
 const initialState = {
@@ -15,12 +19,11 @@ const initialState = {
 function reducer(state, action) {
   switch(action.type) {
     case 'ADD_INPUT_COUNT':
-      return { ...state, inputCount: state.inputCount++ }
+      return { ...state, inputCount: state.inputCount + 1 }
     default:
       return state
   }
 }
-
 
 export default function SideBar() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -28,30 +31,23 @@ export default function SideBar() {
   useEffect(() => {
     if (window.google) {
       const inputs = document.getElementsByClassName('search-input');
-      googleAutoComplete(inputs[0])
-      dispatch({ type: 'ADD_INPUT_COUNT' })
+      googleAutoComplete(Array.from(inputs))
     }
-  }, [window.google])
-
-  useEffect(() => {
-    if (window.google) {
-      const inputs = document.getElementsByClassName('search-input');
-      debugger
-      inputs.forEach(input => googleAutoComplete(input));
-    }
-  }, [state.inputCount])
+  }, [window.google, state.inputCount])
 
   return (
     <div id='sideBar'>
-      <button onClick={ () => dispatch({ type:'ADD_INPUT_COUNT'} ) }>
-        Add Location
+      <button onClick={ () => dispatch({ type: 'ADD_INPUT_COUNT' }) }>
+        Add Another Location
       </button>
       
-      { 
-        times(state.inputCount, String).map(i =>
-          <input className='search-input' key='search-i' type='text' />
-        )
-      }
+      <div className='divInputs'>
+        { 
+          times(state.inputCount, String).map(i =>
+            <input className='search-input' key={`search-${i}`} type='text' />
+          )
+        }
+      </div>
 
     </div>
   )
