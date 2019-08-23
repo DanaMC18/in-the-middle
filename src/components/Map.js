@@ -2,7 +2,11 @@ import React, {
   useEffect,
   useRef
 } from 'react';
-import { GOOGLE_MAP_URL }     from '../constants';
+import {
+  appendGoogleScriptTag,
+  createGoogleScriptTag 
+} from '../utils/googleScriptTag';
+import SideBar from './SideBar';
 import { useInitialPosition } from '../hooks/useInitialPosition';
 
 export default function Map({ options, onMount, className }) {
@@ -22,22 +26,19 @@ export default function Map({ options, onMount, className }) {
 
   useEffect(() => {
     if (!window.google) {
-      const newScriptTag  = document.createElement('script')
-      newScriptTag.type   = 'text/javascript'
-      newScriptTag.src    = GOOGLE_MAP_URL
+      const mapScriptTag = createGoogleScriptTag();
+      appendGoogleScriptTag(mapScriptTag);
+      mapScriptTag.addEventListener('load', onLoad)
 
-      const indexScriptTag  = document.getElementsByTagName('script')[0]
-      const bodyTag         = document.getElementsByTagName('body')[0]
-
-      bodyTag.insertBefore(newScriptTag, indexScriptTag)
-      newScriptTag.addEventListener('load', onLoad)
-
-      return () => newScriptTag.removeEventListener('load', onLoad)
+      return () => mapScriptTag.removeEventListener('load', onLoad)
     } else onLoad()
   }, [window.google])
 
   return (
-    <div { ...props } style={{ height: `80vh`, margin: `1em 0`, borderRadius: `0.5em` }} />
+    <div id='pageContainer'>
+      <SideBar />
+      <div { ...props } style={{ height: `80vh`, margin: `1em 0`, borderRadius: `0.5em` }} />
+    </div>
   )
 }
 
